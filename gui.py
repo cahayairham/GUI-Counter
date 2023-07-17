@@ -20,12 +20,17 @@ label.pack()
 timer_label = tk.Label(window, text="00:00:00")
 timer_label.pack()
 
+# Create an entry field for inputting the timer time
+timer_entry = tk.Entry(window)
+timer_entry.pack()
+
 # Initialize the webcam
 cap = cv2.VideoCapture(0)
 
 # Variables for timer
 timer_running = False
 start_time = 0
+input_time = 0
 
 # Function to capture and display webcam frames
 def capture_frame():
@@ -60,8 +65,9 @@ def capture_frame():
 
 # Function to start the timer
 def start_timer():
-    global timer_running, start_time
+    global timer_running, start_time, input_time
     if not timer_running:
+        input_time = int(timer_entry.get())
         start_time = time.time()
         timer_running = True
         update_timer()
@@ -82,12 +88,17 @@ def update_timer():
     if timer_running:
         current_time = time.time()
         elapsed_seconds = int(current_time - start_time)
-        minutes = elapsed_seconds // 60
-        seconds = elapsed_seconds % 60
-        hours = minutes // 60
-        minutes = minutes % 60
-        timer_label.config(text="{:02d}:{:02d}:{:02d}".format(hours, minutes, seconds))
-    window.after(1000, update_timer)
+        remaining_seconds = input_time - elapsed_seconds
+        if remaining_seconds <= 0:
+            timer_label.config(text="00:00:00")
+            stop_timer()
+        else:
+            minutes = remaining_seconds // 60
+            seconds = remaining_seconds % 60
+            hours = minutes // 60
+            minutes = minutes % 60
+            timer_label.config(text="{:02d}:{:02d}:{:02d}".format(hours, minutes, seconds))
+            window.after(1000, update_timer)
 
 # Create buttons for controlling the timer
 start_button = tk.Button(window, text="Start Timer", command=start_timer)
@@ -98,9 +109,6 @@ stop_button.pack()
 
 # Start capturing and displaying webcam frames
 capture_frame()
-
-# Start the timer update
-update_timer()
 
 # Start the GUI event loop
 window.mainloop()
