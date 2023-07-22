@@ -1,7 +1,8 @@
-pillow==8.1.0
+pillow==9.0.1
 matplotlib==3.3.4
 numpy==1.19.3
 opencv-python==4.5.1.48
 tqdm==4.56.0
 requests==2.25.1
-mediapipe==0.8.3
+mediapipe==0.8.3.1
+tk==0.1.0
